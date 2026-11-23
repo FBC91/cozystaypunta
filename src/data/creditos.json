@@ -1,0 +1,51 @@
+[
+  {
+    "foto": "01-jose-ignacio",
+    "autor": "Jimmy Baikovicius",
+    "licencia": "CC BY-SA 2.0",
+    "licencia_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Faro_de_Jos%C3%A9_Ignacio_a%C3%A9rea_2.jpg"
+  },
+  {
+    "foto": "02-la-barra-playa",
+    "autor": "Rosina Peixoto",
+    "licencia": "CC BY-SA 4.0",
+    "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:En_La_Barra.JPG"
+  },
+  {
+    "foto": "03-la-barra-puente",
+    "autor": "adrian",
+    "licencia": "CC BY 2.0",
+    "licencia_url": "https://creativecommons.org/licenses/by/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Puente_de_la_barra_de_Maldonado_(21773299051).jpg"
+  },
+  {
+    "foto": "04-la-mano",
+    "autor": "Rosina Peixoto",
+    "licencia": "CC BY-SA 4.0",
+    "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:La_Mano,_marzo_2016.JPG"
+  },
+  {
+    "foto": "05-peninsula",
+    "autor": "Jimmy Baikovicius from Montevideo, Uruguay",
+    "licencia": "CC BY-SA 2.0",
+    "licencia_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Punta_del_Este_over_Mavic_Air_2_201229-0026-jikatu_(50774418958).jpg"
+  },
+  {
+    "foto": "06-casapueblo",
+    "autor": "Romerito Pontes from São Carlos",
+    "licencia": "CC BY 2.0",
+    "licencia_url": "https://creativecommons.org/licenses/by/2.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:-2017-09-25_a_29-Uruguai_05_Romerito_Pontes_(37206946220).jpg"
+  },
+  {
+    "foto": "07-casapueblo-noche",
+    "autor": "Ezarate",
+    "licencia": "CC BY-SA 4.0",
+    "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "fuente": "https://commons.wikimedia.org/wiki/File:AtardecerCasaPuebloURU1-jul2019.jpg"
+  }
+]

@@ -1,0 +1,85 @@
+---
+// Fondo fijo del recorrido: una capa por parada. La primera se carga ya;
+// el resto guarda sus srcset en data-* y el script los activa al acercarse.
+import { MEDIA_VERTICAL, type Capa } from '../lib/fondos';
+
+interface Props {
+  capas: Capa[];
+}
+const { capas } = Astro.props;
+---
+
+<div class="escenario" aria-hidden="true">
+  {
+    capas.map((c, i) => {
+      const ya = i === 0;
+      const attr = (v: string) => (ya ? { srcset: v } : { 'data-srcset': v });
+      return (
+        <div class="capa" data-capa={i} data-cargada={ya ? '1' : undefined}>
+          <picture>
+            <source type="image/avif" media={MEDIA_VERTICAL} sizes="100vw" {...attr(c.avifM)} />
+            <source type="image/webp" media={MEDIA_VERTICAL} sizes="100vw" {...attr(c.webpM)} />
+            <source type="image/avif" sizes="100vw" {...attr(c.avif)} />
+            <source type="image/webp" sizes="100vw" {...attr(c.webp)} />
+            <img
+              {...(ya ? { src: c.src } : { 'data-src': c.src })}
+              alt=""
+              width="2560"
+              height="1440"
+              decoding="async"
+              fetchpriority={ya ? 'high' : 'low'}
+            />
+          </picture>
+        </div>
+      );
+    })
+  }
+  <div class="velo"></div>
+</div>
+
+<style>
+  .escenario {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-fondo);
+    overflow: hidden;
+    background: var(--pizarra-900);
+  }
+  .capa {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    will-change: opacity;
+  }
+  .capa:first-child,
+  .capa.activa {
+    opacity: 1;
+  }
+  .capa picture,
+  .capa img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .capa img {
+    object-fit: cover;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  /* Velo para que el texto se lea sobre cualquier foto */
+  .velo {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(28 39 52 / 0.45) 0%, rgb(28 39 52 / 0) 22%),
+      linear-gradient(0deg, rgb(28 39 52 / 0.55) 0%, rgb(28 39 52 / 0) 45%),
+      radial-gradient(120% 90% at 50% 50%, transparent 55%, rgb(28 39 52 / 0.35) 100%);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .capa {
+      transition: opacity 0.4s ease;
+    }
+  }
+</style>

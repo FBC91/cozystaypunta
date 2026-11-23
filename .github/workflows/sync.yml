@@ -1,0 +1,56 @@
+name: Sincronizar casas de Airbnb
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # todos los días, 9:00 de Uruguay
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    outputs:
+      cambio: ${{ steps.commit.outputs.cambio }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      # El script solo usa módulos de Node: no hace falta npm ci.
+      # Si Airbnb bloquea o devuelve 0 casas, falla sin tocar los datos.
+      - run: npm run sync
+      - id: commit
+        run: |
+          if git diff --quiet -- src/data/propiedades.json; then
+            echo "Sin cambios en las casas."
+            echo "cambio=no" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/propiedades.json
+            git commit -m "Sincroniza casas desde Airbnb"
+            git push
+            echo "cambio=si" >> "$GITHUB_OUTPUT"
+          fi
+      # GitHub pausa los cron de repos sin actividad en 60 días; esto lo mantiene activo.
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/sync.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  publicar:
+    needs: sync
+    if: needs.sync.outputs.cambio == 'si'
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

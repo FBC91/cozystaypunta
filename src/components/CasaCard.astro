@@ -1,0 +1,266 @@
+---
+import { getImage } from 'astro:assets';
+import Icono from './Icono.astro';
+import { t, wa, type Lang } from '../i18n';
+
+export interface Casa {
+  id: string;
+  url: string;
+  nombre: string;
+  nombre_pt?: string;
+  nombre_en?: string;
+  barrio: string;
+  huespedes: number | null;
+  habitaciones: number | null;
+  banos: number | null;
+  nuevo: boolean;
+  calificacion: number | null;
+  resenas: number;
+  fotos: string[];
+}
+
+interface Props {
+  casa: Casa;
+  lang: Lang;
+  prioridad?: boolean;
+}
+
+const { casa, lang, prioridad = false } = Astro.props;
+const tx = t[lang].casa;
+const nombre = (lang === 'pt' && casa.nombre_pt) || (lang === 'en' && casa.nombre_en) || casa.nombre;
+const MAX_FOTOS = 5;
+const ANCHOS = [480, 720, 960];
+
+const fotos = await Promise.all(
+  casa.fotos.slice(0, MAX_FOTOS).map(async (url) => {
+    const fuente = `${url}?im_w=1200`;
+    const tamanos = await Promise.all(
+      ANCHOS.map((w) =>
+        getImage({ src: fuente, width: w, height: Math.round((w * 2) / 3), fit: 'cover', format: 'webp', quality: 70 }),
+      ),
+    );
+    return {
+      src: tamanos[1].src,
+      srcset: tamanos.map((r, i) => `${r.src} ${ANCHOS[i]}w`).join(', '),
+    };
+  }),
+);
+
+// «parada» es como se ubican las playas en Punta; en inglés se muestra «stop».
+const barrio = lang === 'en' ? casa.barrio.replace(/\bparada\b/gi, 'stop') : casa.barrio;
+const formato = (n: number) => n.toLocaleString(lang === 'en' ? 'en-US' : lang === 'pt' ? 'pt-BR' : 'es-UY');
+const idTitulo = `casa-${casa.id}`;
+const airbnb = `${casa.url}?locale=${lang === 'pt' ? 'pt' : lang}`;
+---
+
+<article class="casa vidrio revelar" aria-labelledby={idTitulo}>
+  <div class="carrusel" data-carrusel>
+    <ul class="pista" tabindex="0" aria-label={nombre}>
+      {
+        fotos.map((f, i) => (
+          <li class="diapo">
+            {/* Solo la primera foto carga sola; el resto, cuando el carrusel se acerca (src/scripts/recorrido.ts). */}
+            <img
+              {...(i === 0 ? { src: f.src, srcset: f.srcset } : { 'data-src': f.src, 'data-srcset': f.srcset })}
+              sizes="(min-width: 1100px) 520px, (min-width: 700px) 46vw, 92vw"
+              width="720"
+              height="480"
+              alt={tx.foto(i + 1, fotos.length, nombre)}
+              loading={prioridad && i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          </li>
+        ))
+      }
+    </ul>
+    <button class="flecha anterior" type="button" aria-label={tx.anterior} data-anterior>
+      <Icono nombre="izquierda" />
+    </button>
+    <button class="flecha siguiente" type="button" aria-label={tx.siguiente} data-siguiente>
+      <Icono nombre="derecha" />
+    </button>
+    <span class="contador" aria-hidden="true"><span data-actual>1</span> / {fotos.length}</span>
+    {
+      casa.nuevo && casa.resenas === 0 && (
+        <span class="sello">
+          <Icono nombre="destellos" tamano={14} />
+          {tx.nuevo}
+        </span>
+      )
+    }
+  </div>
+
+  <div class="cuerpo">
+    <p class="barrio"><Icono nombre="pin" tamano={16} />{barrio}</p>
+    <h3 id={idTitulo}>{nombre}</h3>
+    <ul class="datos">
+      {casa.huespedes && <li><Icono nombre="usuarios" tamano={18} />{tx.huespedes(casa.huespedes)}</li>}
+      {casa.habitaciones && <li><Icono nombre="cama" tamano={18} />{tx.dormitorios(casa.habitaciones)}</li>}
+      {casa.banos && <li><Icono nombre="bano" tamano={18} />{tx.banos(casa.banos)}</li>}
+    </ul>
+    {
+      casa.calificacion && casa.resenas > 0 && (
+        <p class="nota">
+          <Icono nombre="estrella" tamano={16} />
+          <strong>{formato(casa.calificacion)}</strong> · {tx.resenas(casa.resenas)}
+        </p>
+      )
+    }
+    <div class="acciones">
+      <a class="btn btn-pizarra" href={airbnb} target="_blank" rel="noopener">
+        <Icono nombre="airbnb" />
+        {tx.verAirbnb}
+        <span class="sr-only">{tx.abreNueva}</span>
+      </a>
+      <a class="btn btn-borde-oscuro" href={wa(tx.waMensaje(nombre))} target="_blank" rel="noopener">
+        <Icono nombre="whatsapp" />
+        {tx.consultar}
+        <span class="sr-only">{tx.abreNueva}</span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .casa {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 560px;
+  }
+  .carrusel {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    background: var(--crema-2);
+  }
+  .pista {
+    display: flex;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .pista::-webkit-scrollbar {
+    display: none;
+  }
+  .pista:focus-visible {
+    outline-offset: -4px;
+  }
+  .diapo {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+  }
+  .diapo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .flecha {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(246 243 236 / 0.92);
+    color: var(--pizarra-900);
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
+    transition:
+      background-color 0.2s,
+      opacity 0.2s;
+  }
+  .flecha:hover {
+    background: var(--crema);
+  }
+  .flecha[disabled] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .anterior {
+    left: 12px;
+  }
+  .siguiente {
+    right: 12px;
+  }
+  .contador,
+  .sello {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .contador {
+    right: 12px;
+    bottom: 12px;
+    background: rgb(28 39 52 / 0.78);
+    color: var(--crema);
+  }
+  .sello {
+    left: 12px;
+    top: 12px;
+    background: var(--arena);
+    color: var(--pizarra-900);
+  }
+  .cuerpo {
+    display: grid;
+    gap: 12px;
+    padding: 20px 22px 22px;
+  }
+  .barrio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--gris-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  h3 {
+    font-size: clamp(1.4rem, 1.1rem + 1vw, 1.75rem);
+  }
+  .datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--pizarra-800);
+    font-size: 0.95rem;
+  }
+  .datos li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .datos :global(svg) {
+    color: var(--niebla);
+  }
+  .nota {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .acciones .btn {
+    flex: 1 1 180px;
+  }
+</style>

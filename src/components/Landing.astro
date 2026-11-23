@@ -1,0 +1,633 @@
+---
+import { getImage } from 'astro:assets';
+import CasaCard, { type Casa } from './CasaCard.astro';
+import Icono from './Icono.astro';
+import Recorrido from './Recorrido.astro';
+import recorrido from '../data/recorrido.json';
+import creditos from '../data/creditos.json';
+import { LANGS, rutaDe, t, wa, WHATSAPP_VISIBLE, type Lang } from '../i18n';
+import type { Capa } from '../lib/fondos';
+
+interface Props {
+  lang: Lang;
+  casas: (Casa & { parada: string })[];
+  perfilAirbnb: string;
+  capas: Capa[];
+}
+
+const { lang, casas, perfilAirbnb, capas } = Astro.props;
+const tx = t[lang];
+
+const paradasCasas = recorrido.filter((p) => p.casas);
+const casasDe = (id: string) => casas.filter((c) => c.parada === id);
+const primeraParadaConCasas = paradasCasas.find((p) => casasDe(p.id).length)?.id;
+const n = (p: (typeof recorrido)[number]) => p.n;
+
+// Foto de «Quiénes somos»: una de las casas reales (nunca personas generadas).
+// Se usa una foto que no aparece en los carruseles (estos muestran las 5 primeras).
+const casaFoto = casas.find((c) => c.id === '1823292426877716371') ?? casas[0];
+const urlNosotros = casaFoto?.fotos[8] ?? casaFoto?.fotos.at(-1);
+const fotoNosotros = urlNosotros
+  ? await getImage({
+      src: `${urlNosotros}?im_w=1200`,
+      width: 720,
+      height: 900,
+      fit: 'cover',
+      format: 'webp',
+      quality: 72,
+    })
+  : null;
+
+const nosotros = recorrido.find((p) => p.seccion === 'nosotros')!;
+const contacto = recorrido.find((p) => p.seccion === 'contacto')!;
+const portada = recorrido.find((p) => p.seccion === 'portada')!;
+const anio = new Date().getFullYear();
+---
+
+<header class="nav">
+  <a class="marca" href={rutaDe(lang)} aria-label="Cozy Stay Punta">
+    <svg class="marca-sello" viewBox="0 0 64 64" width="34" height="34" aria-hidden="true" focusable="false">
+      <circle cx="32" cy="32" r="32" fill="#d9bd8b"></circle>
+      <path d="M18 36a14 14 0 0 1 28 0z" fill="#1c2734"></path>
+      <path d="M12 43q5-4 10 0t10 0 10 0 10 0" fill="none" stroke="#1c2734" stroke-width="4" stroke-linecap="round"></path>
+      <path d="M17 51q3.75-3 7.5 0t7.5 0 7.5 0 7.5 0" fill="none" stroke="#47576a" stroke-width="4" stroke-linecap="round"></path>
+    </svg>
+    <span class="marca-texto">Cozy Stay <em>Punta</em></span>
+  </a>
+  <nav class="links" aria-label="Principal">
+    <a href="#casas">{tx.nav.casas}</a>
+    <a href="#nosotros">{tx.nav.nosotros}</a>
+    <a href="#contacto">{tx.nav.contacto}</a>
+  </nav>
+  <nav class="idiomas" aria-label={tx.nav.idioma}>
+    {
+      LANGS.map((l) => (
+        <a href={rutaDe(l)} hreflang={t[l].htmlLang} lang={t[l].htmlLang} aria-current={l === lang ? 'page' : undefined}>
+          <span aria-hidden="true">{l.toUpperCase()}</span>
+          <span class="sr-only">{t[l].nombreIdioma}</span>
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<Recorrido capas={capas} />
+
+<main id="contenido">
+  <!-- 1 · Portada -->
+  <section class="parada portada" data-parada="0" aria-labelledby="titulo-portada">
+    <div class="portada-texto revelar-inicio">
+      <p class="eyebrow">{tx.portada.eyebrow}</p>
+      <h1 id="titulo-portada">{tx.portada.titulo}</h1>
+      <p class="bajada">{tx.portada.subtitulo}</p>
+      <div class="portada-acciones">
+        <a class="btn btn-arena" href="#casas">
+          <Icono nombre="casa" />
+          {tx.portada.cta}
+        </a>
+      </div>
+    </div>
+    <p class="etiqueta etiqueta-portada vidrio-oscuro">
+      <Icono nombre="olas" tamano={16} />
+      <span>{tx.lugares[portada.id]} · {tx.luz[portada.luz as keyof typeof tx.luz]}</span>
+    </p>
+    <a class="pista-scroll" href="#casas">
+      <span>{tx.portada.pista}</span>
+      <Icono nombre="abajo" tamano={18} />
+    </a>
+  </section>
+
+  <!-- 2 a 5 · Casas, una o dos por parada -->
+  {
+    paradasCasas.map((p) => {
+      const deEsta = casasDe(p.id);
+      return (
+        <section
+          class:list={['parada', 'parada-casas', { 'sin-casas': !deEsta.length, doble: deEsta.length > 1 }]}
+          data-parada={n(p) - 1}
+          id={p.id === primeraParadaConCasas ? 'casas' : `parada-${p.id}`}
+          aria-label={`${tx.parada} ${n(p)} · ${tx.lugares[p.id]}`}
+        >
+          {p.id === primeraParadaConCasas && <h2 class="sr-only">{tx.nav.casas}</h2>}
+          <p class="etiqueta vidrio-oscuro">
+            <span class="etiqueta-n">{String(n(p)).padStart(2, '0')}</span>
+            <span>
+              {tx.lugares[p.id]} · {tx.luz[p.luz as keyof typeof tx.luz]}
+            </span>
+          </p>
+          {deEsta.length > 0 && (
+            <div class="casas">
+              {deEsta.map((c, i) => (
+                <CasaCard casa={c} lang={lang} />
+              ))}
+            </div>
+          )}
+        </section>
+      );
+    })
+  }
+
+  <!-- 6 · Quiénes somos -->
+  <section class="parada nosotros" data-parada={nosotros.n - 1} id="nosotros" aria-labelledby="titulo-nosotros">
+    <p class="etiqueta vidrio-oscuro">
+      <span class="etiqueta-n">{String(nosotros.n).padStart(2, '0')}</span>
+      <span>{tx.lugares[nosotros.id]} · {tx.luz[nosotros.luz as keyof typeof tx.luz]}</span>
+    </p>
+    <div class="nosotros-card vidrio revelar">
+      {
+        fotoNosotros && (
+          <img
+            class="nosotros-foto"
+            src={fotoNosotros.src}
+            width="720"
+            height="900"
+            alt={tx.nosotros.fotoAlt}
+            loading="lazy"
+            decoding="async"
+          />
+        )
+      }
+      <div class="nosotros-texto">
+        <h2 id="titulo-nosotros">{tx.nosotros.titulo}</h2>
+        {tx.nosotros.parrafos.map((par) => <p>{par}</p>)}
+        <ul class="puntos">
+          {tx.nosotros.puntos.map((pt, i) => (
+            <li>
+              <span class="punto-icono">
+                <Icono nombre={(['olas', 'escudo', 'mensaje'] as const)[i]} tamano={20} />
+              </span>
+              <span>
+                <strong>{pt.titulo}</strong>
+                {pt.texto}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <a class="enlace" href={perfilAirbnb} target="_blank" rel="noopener">
+          <Icono nombre="airbnb" tamano={18} />
+          {tx.nosotros.perfil}
+          <span class="sr-only">{tx.casa.abreNueva}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Contacto -->
+  <section class="parada contacto" data-parada={contacto.n - 1} id="contacto" aria-labelledby="titulo-contacto">
+    <div class="contacto-centro revelar">
+      <h2 id="titulo-contacto">{tx.contacto.titulo}</h2>
+      <p class="bajada">{tx.contacto.texto}</p>
+      <div class="contacto-acciones">
+        <a class="btn btn-arena" href={wa(tx.contacto.waMensaje)} target="_blank" rel="noopener">
+          <Icono nombre="whatsapp" />
+          {tx.contacto.whatsapp}
+          <span class="sr-only">{tx.casa.abreNueva}</span>
+        </a>
+        <a class="btn btn-borde" href={perfilAirbnb} target="_blank" rel="noopener">
+          <Icono nombre="airbnb" />
+          {tx.contacto.airbnb}
+          <span class="sr-only">{tx.casa.abreNueva}</span>
+        </a>
+      </div>
+      <p class="telefono">WhatsApp {WHATSAPP_VISIBLE}</p>
+    </div>
+    <aside class="duenos vidrio-oscuro revelar" aria-labelledby="titulo-duenos">
+      <p>
+        <strong id="titulo-duenos">{tx.contacto.duenosTitulo}</strong>
+        {tx.contacto.duenosTexto}
+      </p>
+      <a class="btn btn-borde" href={wa(tx.contacto.duenosMensaje)} target="_blank" rel="noopener">
+        <Icono nombre="whatsapp" />
+        {tx.contacto.duenosBoton}
+        <span class="sr-only">{tx.casa.abreNueva}</span>
+      </a>
+    </aside>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="pie-interior">
+    <p class="pie-marca">Cozy Stay <em>Punta</em></p>
+    <p>{tx.pie.ia}</p>
+    <details class="creditos">
+      <summary>{tx.pie.creditos}</summary>
+      <ul>
+        {
+          creditos.map((c, i) => (
+            <li>
+              {String(i + 1).padStart(2, '0')} · {tx.lugares[recorrido[i].id]} — {c.autor},{' '}
+              <a href={c.fuente} rel="noopener" target="_blank">Wikimedia Commons</a>,{' '}
+              <a href={c.licencia_url} rel="license noopener" target="_blank">{c.licencia}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="creditos-nota">
+        {lang === 'en'
+          ? 'Photos were cropped and color graded; edited versions keep the original license.'
+          : lang === 'pt'
+            ? 'As fotos foram recortadas e tratadas em cor; as versões editadas mantêm a licença original.'
+            : 'Las fotos fueron recortadas y etalonadas; las versiones editadas mantienen la licencia original.'}
+      </p>
+    </details>
+    <p class="pie-legal">© {anio} Cozy Stay Punta. {tx.pie.derechos}</p>
+  </div>
+</footer>
+
+<script>
+  import '../scripts/recorrido';
+</script>
+
+<style>
+  /* ---------- Nav ---------- */
+  .nav {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    left: var(--gutter);
+    right: var(--gutter);
+    z-index: var(--z-nav);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 8px 8px 8px 14px;
+    border-radius: 999px;
+    background: rgb(28 39 52 / 0.55);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    color: var(--crema);
+  }
+  .marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    min-height: 44px;
+  }
+  .marca-sello {
+    flex: none;
+  }
+  .marca-texto {
+    font: 560 1.15rem/1 var(--f-titulo);
+    letter-spacing: -0.01em;
+  }
+  .marca-texto em,
+  .pie-marca em {
+    font-style: italic;
+    color: var(--arena);
+  }
+  .links {
+    display: none;
+    gap: 4px;
+  }
+  .links a,
+  .idiomas a {
+    display: inline-grid;
+    place-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+  }
+  .links a:hover,
+  .idiomas a:hover {
+    background: rgb(255 255 255 / 0.12);
+  }
+  .idiomas {
+    display: flex;
+    gap: 2px;
+  }
+  .idiomas a {
+    min-width: 44px;
+    padding: 0 8px;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  .idiomas a[aria-current='page'] {
+    background: var(--crema);
+    color: var(--pizarra-900);
+  }
+  @media (min-width: 860px) {
+    .links {
+      display: flex;
+    }
+  }
+
+  /* ---------- Paradas ---------- */
+  main {
+    position: relative;
+    z-index: var(--z-contenido);
+  }
+  .parada {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    min-height: 100svh;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 110px var(--gutter) 72px;
+  }
+  .parada-casas {
+    min-height: 130svh;
+  }
+  .parada-casas.sin-casas {
+    min-height: 80svh;
+  }
+  .etiqueta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 6px 14px 6px 6px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .etiqueta-n {
+    display: grid;
+    place-items: center;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--arena);
+    color: var(--pizarra-900);
+    font: 600 0.85rem/1 var(--f-texto);
+  }
+  .casas {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .parada-casas:nth-of-type(odd) .casas {
+    justify-items: end;
+  }
+  .doble .casas {
+    justify-items: stretch;
+  }
+  @media (min-width: 1000px) {
+    .doble .casas {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- Portada ---------- */
+  .portada {
+    color: var(--crema);
+    justify-content: flex-end;
+    padding-bottom: clamp(96px, 14vh, 160px);
+  }
+  .portada-texto {
+    display: grid;
+    gap: 18px;
+    max-width: 760px;
+  }
+  .eyebrow {
+    justify-self: start;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgb(28 39 52 / 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--arena);
+  }
+  .portada h1 {
+    font-size: clamp(2.9rem, 1.6rem + 6.2vw, 6.4rem);
+    font-weight: 520;
+    text-shadow: 0 2px 30px rgb(16 22 30 / 0.45);
+  }
+  .bajada {
+    font-size: clamp(1.08rem, 1rem + 0.5vw, 1.35rem);
+    max-width: 40ch;
+    text-shadow: 0 1px 16px rgb(16 22 30 / 0.6);
+  }
+  .portada-acciones {
+    margin-top: 8px;
+  }
+  .etiqueta-portada {
+    position: absolute;
+    top: 96px;
+    right: var(--gutter);
+    padding-left: 12px;
+  }
+  .pista-scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    translate: -50% 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 12px;
+    color: var(--crema);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    opacity: 0.9;
+  }
+  .pista-scroll :global(svg) {
+    animation: flotar 2.2s ease-in-out infinite;
+  }
+  @keyframes flotar {
+    50% {
+      transform: translateY(5px);
+    }
+  }
+  @media (max-width: 640px) {
+    .portada {
+      padding-bottom: 150px;
+    }
+    .etiqueta-portada {
+      top: auto;
+      bottom: 72px;
+      left: var(--gutter);
+      right: auto;
+    }
+    .pista-scroll {
+      display: none;
+    }
+  }
+
+  /* ---------- Nosotros ---------- */
+  .nosotros {
+    min-height: 130svh;
+  }
+  .nosotros-card {
+    display: grid;
+    overflow: hidden;
+    max-width: 980px;
+  }
+  .nosotros-foto {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+  }
+  .nosotros-texto {
+    display: grid;
+    gap: 16px;
+    padding: 26px 24px 28px;
+    color: var(--pizarra-800);
+  }
+  .nosotros-texto h2 {
+    font-size: clamp(2rem, 1.5rem + 2vw, 2.8rem);
+    color: var(--pizarra-900);
+  }
+  .puntos {
+    display: grid;
+    gap: 14px;
+    margin: 6px 0 4px;
+    padding: 0;
+    list-style: none;
+  }
+  .puntos li {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .puntos strong {
+    display: block;
+    color: var(--pizarra-900);
+  }
+  .punto-icono {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--crema-2);
+    color: var(--gris-2);
+  }
+  .enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    color: var(--pizarra-900);
+    text-underline-offset: 4px;
+  }
+  @media (min-width: 820px) {
+    .nosotros-card {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+    .nosotros-foto {
+      height: 100%;
+      min-height: 520px;
+    }
+    .nosotros-texto {
+      padding: 40px 40px 40px 36px;
+    }
+  }
+
+  /* ---------- Contacto ---------- */
+  .contacto {
+    color: var(--crema);
+    align-items: center;
+    text-align: center;
+    gap: 48px;
+  }
+  .contacto-centro {
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+    max-width: 780px;
+  }
+  .contacto h2 {
+    font-size: clamp(2.4rem, 1.4rem + 4.4vw, 4.8rem);
+    font-weight: 520;
+    text-shadow: 0 2px 30px rgb(16 22 30 / 0.5);
+  }
+  .contacto-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .telefono {
+    font-size: 0.95rem;
+    opacity: 0.9;
+  }
+  .duenos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 22px;
+    padding: 18px 22px;
+    border-radius: var(--radio);
+    max-width: 780px;
+  }
+  .duenos strong {
+    display: block;
+    font: 560 1.25rem/1.2 var(--f-titulo);
+  }
+  @media (min-width: 720px) {
+    .duenos {
+      justify-content: space-between;
+      text-align: left;
+      width: 100%;
+    }
+  }
+
+  /* ---------- Pie ---------- */
+  .pie {
+    position: relative;
+    z-index: var(--z-contenido);
+    background: var(--pizarra-900);
+    color: rgb(246 243 236 / 0.86);
+    font-size: 0.9rem;
+  }
+  .pie-interior {
+    display: grid;
+    gap: 12px;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 40px var(--gutter) max(40px, env(safe-area-inset-bottom));
+  }
+  .pie-marca {
+    font: 560 1.4rem/1 var(--f-titulo);
+    color: var(--crema);
+  }
+  .creditos summary {
+    display: list-item;
+    padding: 11px 0;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--crema);
+  }
+  .creditos summary::marker {
+    color: var(--arena);
+  }
+  .creditos ul {
+    display: grid;
+    gap: 6px;
+    margin: 4px 0 10px;
+    padding: 0;
+    list-style: none;
+  }
+  .creditos a {
+    color: var(--arena);
+  }
+  .creditos-nota,
+  .pie-legal {
+    font-size: 0.82rem;
+    opacity: 0.85;
+  }
+</style>
