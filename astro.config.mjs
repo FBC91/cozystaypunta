@@ -15,6 +15,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      filter: (pagina) => !pagina.includes('/creditos'),
       i18n: {
         defaultLocale: 'es',
         locales: { es: 'es-UY', pt: 'pt-BR', en: 'en' },

@@ -74,7 +74,7 @@ async function main() {
   const conParada = asignarParadas(visibles);
 
   const salida = {
-    anfitriona: { nombre: hostName, perfil: `https://www.airbnb.com/users/show/${PERFIL}` },
+    anfitriona: { nombre: hostName, perfil: profileUrl(PERFIL) },
     propiedades: conParada,
   };
   const sinFecha = (o) => JSON.stringify({ ...o, actualizado: undefined });

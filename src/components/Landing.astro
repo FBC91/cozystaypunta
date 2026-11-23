@@ -4,7 +4,6 @@ import CasaCard, { type Casa } from './CasaCard.astro';
 import Icono from './Icono.astro';
 import Recorrido from './Recorrido.astro';
 import recorrido from '../data/recorrido.json';
-import creditos from '../data/creditos.json';
 import { LANGS, rutaDe, t, wa, WHATSAPP_VISIBLE, type Lang } from '../i18n';
 import type { Capa } from '../lib/fondos';
 
@@ -208,29 +207,10 @@ const anio = new Date().getFullYear();
 <footer class="pie">
   <div class="pie-interior">
     <p class="pie-marca">Cozy Stay <em>Punta</em></p>
-    <p>{tx.pie.ia}</p>
-    <details class="creditos">
-      <summary>{tx.pie.creditos}</summary>
-      <ul>
-        {
-          creditos.map((c, i) => (
-            <li>
-              {String(i + 1).padStart(2, '0')} · {tx.lugares[recorrido[i].id]} — {c.autor},{' '}
-              <a href={c.fuente} rel="noopener" target="_blank">Wikimedia Commons</a>,{' '}
-              <a href={c.licencia_url} rel="license noopener" target="_blank">{c.licencia}</a>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="creditos-nota">
-        {lang === 'en'
-          ? 'Photos were cropped and color graded; edited versions keep the original license.'
-          : lang === 'pt'
-            ? 'As fotos foram recortadas e tratadas em cor; as versões editadas mantêm a licença original.'
-            : 'Las fotos fueron recortadas y etalonadas; las versiones editadas mantienen la licencia original.'}
-      </p>
-    </details>
-    <p class="pie-legal">© {anio} Cozy Stay Punta. {tx.pie.derechos}</p>
+    <p class="pie-legal">
+      <span>© {anio} Cozy Stay Punta. {tx.pie.derechos}</span>
+      <a href="/creditos/">{tx.pie.creditos}</a>
+    </p>
   </div>
 </footer>
 
@@ -605,29 +585,17 @@ const anio = new Date().getFullYear();
     font: 560 1.4rem/1 var(--f-titulo);
     color: var(--crema);
   }
-  .creditos summary {
-    display: list-item;
-    padding: 11px 0;
-    cursor: pointer;
-    font-weight: 700;
-    color: var(--crema);
-  }
-  .creditos summary::marker {
-    color: var(--arena);
-  }
-  .creditos ul {
-    display: grid;
-    gap: 6px;
-    margin: 4px 0 10px;
-    padding: 0;
-    list-style: none;
-  }
-  .creditos a {
-    color: var(--arena);
-  }
-  .creditos-nota,
   .pie-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 14px;
     font-size: 0.82rem;
     opacity: 0.85;
+  }
+  .pie-legal a {
+    padding: 12px 0;
+    color: inherit;
+    text-underline-offset: 3px;
   }
 </style>

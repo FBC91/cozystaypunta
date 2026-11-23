@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import Icono from './Icono.astro';
-import { t, wa, type Lang } from '../i18n';
+import { enAirbnb, t, wa, type Lang } from '../i18n';
 
 export interface Casa {
   id: string;
@@ -50,7 +50,7 @@ const fotos = await Promise.all(
 const barrio = lang === 'en' ? casa.barrio.replace(/\bparada\b/gi, 'stop') : casa.barrio;
 const formato = (n: number) => n.toLocaleString(lang === 'en' ? 'en-US' : lang === 'pt' ? 'pt-BR' : 'es-UY');
 const idTitulo = `casa-${casa.id}`;
-const airbnb = `${casa.url}?locale=${lang === 'pt' ? 'pt' : lang}`;
+const airbnb = enAirbnb(casa.url, lang);
 ---
 
 <article class="casa vidrio revelar" aria-labelledby={idTitulo}>

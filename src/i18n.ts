@@ -8,6 +8,14 @@ export const CONTACTO_NOMBRE = 'Juan';
 export const rutaDe = (lang: Lang) => (lang === 'es' ? '/' : `/${lang}/`);
 export const wa = (texto: string) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
 
+// Cada idioma abre Airbnb en su dominio (probado: perfil y avisos cargan en los tres).
+const AIRBNB: Record<Lang, string> = { es: 'es.airbnb.com', pt: 'www.airbnb.com.br', en: 'www.airbnb.com' };
+export const enAirbnb = (url: string, lang: Lang) => {
+  const u = new URL(url);
+  u.hostname = AIRBNB[lang];
+  return u.href;
+};
+
 type Luz = 'amanecer' | 'manana' | 'mediodia' | 'tarde' | 'dorada' | 'atardecer' | 'noche';
 
 interface Textos {
@@ -54,7 +62,7 @@ interface Textos {
     duenosBoton: string;
     duenosMensaje: string;
   };
-  pie: { ia: string; creditos: string; derechos: string };
+  pie: { creditos: string; derechos: string };
 }
 
 export const t: Record<Lang, Textos> = {
@@ -133,8 +141,7 @@ export const t: Record<Lang, Textos> = {
       duenosMensaje: '¡Hola! Tengo una propiedad en Punta del Este y quiero información para que la administren.',
     },
     pie: {
-      ia: 'Recorrido animado a partir de fotos reales de Punta del Este.',
-      creditos: 'Fotos del recorrido',
+      creditos: 'Créditos de fotos',
       derechos: 'Todos los derechos reservados.',
     },
   },
@@ -213,8 +220,7 @@ export const t: Record<Lang, Textos> = {
       duenosMensaje: 'Olá! Tenho um imóvel em Punta del Este e quero informações sobre a administração.',
     },
     pie: {
-      ia: 'Percurso animado a partir de fotos reais de Punta del Este.',
-      creditos: 'Fotos do percurso',
+      creditos: 'Créditos das fotos',
       derechos: 'Todos os direitos reservados.',
     },
   },
@@ -293,8 +299,7 @@ export const t: Record<Lang, Textos> = {
       duenosMensaje: "Hi! I own a property in Punta del Este and I'd like information about your management service.",
     },
     pie: {
-      ia: 'Animated journey made from real photos of Punta del Este.',
-      creditos: 'Journey photos',
+      creditos: 'Photo credits',
       derechos: 'All rights reserved.',
     },
   },

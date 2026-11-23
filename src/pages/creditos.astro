@@ -1,0 +1,91 @@
+---
+// Créditos de las fotos del recorrido (exigidos por las licencias Creative Commons).
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/manrope';
+import '../styles/global.css';
+import creditos from '../data/creditos.json';
+import recorrido from '../data/recorrido.json';
+import { t } from '../i18n';
+
+const lugares = t.es.lugares;
+---
+
+<!doctype html>
+<html lang="es-UY">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Créditos de fotos · Cozy Stay Punta</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main>
+      <a class="volver" href="/">← Cozy Stay Punta</a>
+      <h1>Créditos de fotos</h1>
+      <p>
+        Las fotos de fondo son de Wikimedia Commons. Para la web fueron recortadas y retocadas en color; las
+        versiones editadas mantienen la licencia original.
+        <span lang="pt">Fotos de fundo: Wikimedia Commons.</span>
+        <span lang="en">Background photos: Wikimedia Commons.</span>
+      </p>
+      <ol>
+        {
+          creditos.map((c, i) => (
+            <li>
+              <strong>{lugares[recorrido[i].id]}</strong> — {c.autor}.{' '}
+              <a href={c.fuente} rel="noopener">Original</a> ·{' '}
+              <a href={c.licencia_url} rel="license noopener">{c.licencia}</a>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="chico">Las fotos de las casas son de sus avisos en Airbnb.</p>
+    </main>
+  </body>
+</html>
+
+<style>
+  body {
+    background: var(--crema);
+  }
+  main {
+    display: grid;
+    gap: 18px;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px var(--gutter) 64px;
+    color: var(--pizarra-800);
+  }
+  h1 {
+    font-size: clamp(2rem, 1.6rem + 2vw, 2.8rem);
+    color: var(--pizarra-900);
+  }
+  span[lang] {
+    display: block;
+    color: var(--gris-2);
+    font-size: 0.9rem;
+  }
+  ol {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding-left: 1.4em;
+  }
+  a {
+    color: var(--pizarra-900);
+    text-underline-offset: 3px;
+  }
+  .volver {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .chico {
+    font-size: 0.9rem;
+    color: var(--gris-2);
+  }
+</style>
