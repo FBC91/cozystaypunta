@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import Landing from '../components/Landing.astro';
 import datos from '../data/propiedades.json';
 import { enAirbnb, LANGS, type Lang } from '../i18n';
-import { capasRecorrido, MEDIA_VERTICAL } from '../lib/fondos';
+import { capasRecorrido, MEDIA_VERTICAL, paradasVisibles } from '../lib/fondos';
 
 export function getStaticPaths() {
   return LANGS.map((lang) => ({ params: { lang: lang === 'es' ? undefined : lang }, props: { lang } }));
@@ -12,7 +12,8 @@ export function getStaticPaths() {
 
 const { lang } = Astro.props as { lang: Lang };
 const perfil = enAirbnb(datos.anfitriona.perfil, lang);
-const capas = await capasRecorrido();
+const paradas = paradasVisibles(datos.propiedades);
+const capas = await capasRecorrido(paradas);
 const portada = capas[0];
 const precargar = [
   { srcset: portada.avifM, sizes: '100vw', media: MEDIA_VERTICAL, type: 'image/avif' },
@@ -21,5 +22,5 @@ const precargar = [
 ---
 
 <Base lang={lang} perfilAirbnb={perfil} precargar={precargar}>
-  <Landing lang={lang} casas={datos.propiedades} perfilAirbnb={perfil} capas={capas} />
+  <Landing lang={lang} casas={datos.propiedades} perfilAirbnb={perfil} capas={capas} paradas={paradas} />
 </Base>

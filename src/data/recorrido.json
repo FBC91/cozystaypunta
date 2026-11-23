@@ -1,9 +1,11 @@
 [
-  { "id": "jose-ignacio", "n": 1, "foto": "01-jose-ignacio", "luz": "amanecer", "lat": -34.8457, "lng": -54.6365, "seccion": "portada", "casas": false },
-  { "id": "playas-la-barra", "n": 2, "foto": "02-la-barra-playa", "luz": "manana", "lat": -34.9065, "lng": -54.8495, "seccion": "casas", "casas": true },
-  { "id": "la-barra", "n": 3, "foto": "03-la-barra-puente", "luz": "mediodia", "lat": -34.9133, "lng": -54.8663, "seccion": "casas", "casas": true },
-  { "id": "la-mano", "n": 4, "foto": "04-la-mano", "luz": "tarde", "lat": -34.9592, "lng": -54.9372, "seccion": "casas", "casas": true },
-  { "id": "peninsula", "n": 5, "foto": "05-peninsula", "luz": "dorada", "lat": -34.9648, "lng": -54.9502, "seccion": "casas", "casas": true },
-  { "id": "casapueblo", "n": 6, "foto": "06-casapueblo", "luz": "atardecer", "lat": -34.9065, "lng": -55.044, "seccion": "nosotros", "casas": false },
-  { "id": "casapueblo-noche", "n": 7, "foto": "07-casapueblo-noche", "luz": "noche", "lat": -34.9065, "lng": -55.044, "seccion": "contacto", "casas": false }
+  { "id": "jose-ignacio", "foto": "01-jose-ignacio", "luz": "amanecer", "lat": -34.8457, "lng": -54.6365, "seccion": "portada", "casas": false },
+  { "id": "playas-la-barra", "foto": "02-la-barra-playa", "luz": "manana", "lat": -34.9065, "lng": -54.8495, "seccion": "casas", "casas": true },
+  { "id": "la-barra", "foto": "03-la-barra-puente", "luz": "mediodia", "lat": -34.9133, "lng": -54.8663, "seccion": "casas", "casas": true },
+  { "id": "la-mano", "foto": "04-la-mano", "luz": "tarde", "lat": -34.9592, "lng": -54.9372, "seccion": "casas", "casas": true },
+  { "id": "playa-mansa", "foto": "08-playa-mansa", "luz": "playa", "lat": -34.925, "lng": -54.982, "seccion": "casas", "casas": true, "extra": true },
+  { "id": "peninsula", "foto": "05-peninsula", "luz": "dorada", "lat": -34.9648, "lng": -54.9502, "seccion": "casas", "casas": true },
+  { "id": "gorriti", "foto": "09-gorriti-ocaso", "luz": "ocaso", "lat": -34.948, "lng": -54.955, "seccion": "casas", "casas": true, "extra": true },
+  { "id": "casapueblo", "foto": "06-casapueblo", "luz": "atardecer", "lat": -34.9065, "lng": -55.044, "seccion": "nosotros", "casas": false },
+  { "id": "casapueblo-noche", "foto": "07-casapueblo-noche", "luz": "noche", "lat": -34.9065, "lng": -55.044, "seccion": "contacto", "casas": false }
 ]

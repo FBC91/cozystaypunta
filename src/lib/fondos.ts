@@ -1,4 +1,5 @@
-// Genera los srcset (AVIF/WebP, horizontal y vertical) de las 7 fotos del recorrido.
+// Genera los srcset (AVIF/WebP, horizontal y vertical) de las fotos del recorrido.
+// Solo se generan las de las paradas que se muestran (las extra dependen de las casas).
 import { getImage } from 'astro:assets';
 import recorrido from '../data/recorrido.json';
 
@@ -33,23 +34,33 @@ async function srcset(img: ImageMetadata, anchos: number[], format: 'avif' | 'we
   return partes.join(', ');
 }
 
-let cache: Promise<Capa[]> | undefined;
+type Parada = (typeof recorrido)[number];
+const cache = new Map<string, Promise<Capa>>();
 
-export function capasRecorrido(): Promise<Capa[]> {
-  cache ??= Promise.all(
-    recorrido.map(async (p) => {
-      const ancho = asset(p.foto);
-      const alto = asset(`${p.foto}-m`);
-      const respaldo = await getImage({ src: ancho, width: 1440, format: 'webp', quality: 72 });
-      return {
-        id: p.id,
-        avif: await srcset(ancho, ANCHOS, 'avif'),
-        webp: await srcset(ancho, ANCHOS, 'webp'),
-        avifM: await srcset(alto, ANCHOS_M, 'avif'),
-        webpM: await srcset(alto, ANCHOS_M, 'webp'),
-        src: respaldo.src,
-      };
+async function capa(p: Parada): Promise<Capa> {
+  const ancho = asset(p.foto);
+  const alto = asset(`${p.foto}-m`);
+  const respaldo = await getImage({ src: ancho, width: 1440, format: 'webp', quality: 72 });
+  return {
+    id: p.id,
+    avif: await srcset(ancho, ANCHOS, 'avif'),
+    webp: await srcset(ancho, ANCHOS, 'webp'),
+    avifM: await srcset(alto, ANCHOS_M, 'avif'),
+    webpM: await srcset(alto, ANCHOS_M, 'webp'),
+    src: respaldo.src,
+  };
+}
+
+export function capasRecorrido(paradas: Parada[]): Promise<Capa[]> {
+  return Promise.all(
+    paradas.map((p) => {
+      if (!cache.has(p.id)) cache.set(p.id, capa(p));
+      return cache.get(p.id)!;
     }),
   );
-  return cache;
+}
+
+/** Paradas que se muestran: las fijas siempre; las extra solo si tienen alguna casa. */
+export function paradasVisibles(casas: { parada?: string }[]): Parada[] {
+  return recorrido.filter((p) => !('extra' in p && p.extra) || casas.some((c) => c.parada === p.id));
 }

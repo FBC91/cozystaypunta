@@ -16,7 +16,7 @@ export const enAirbnb = (url: string, lang: Lang) => {
   return u.href;
 };
 
-type Luz = 'amanecer' | 'manana' | 'mediodia' | 'tarde' | 'dorada' | 'atardecer' | 'noche';
+type Luz = 'amanecer' | 'manana' | 'mediodia' | 'tarde' | 'playa' | 'dorada' | 'ocaso' | 'atardecer' | 'noche';
 
 interface Textos {
   htmlLang: string;
@@ -87,7 +87,9 @@ export const t: Record<Lang, Textos> = {
       manana: 'Media mañana',
       mediodia: 'Mediodía',
       tarde: 'Tarde',
+      playa: 'Tarde de playa',
       dorada: 'Hora dorada',
+      ocaso: 'Sol bajo',
       atardecer: 'Puesta del sol',
       noche: 'Noche',
     },
@@ -96,7 +98,9 @@ export const t: Record<Lang, Textos> = {
       'playas-la-barra': 'Playas de La Barra',
       'la-barra': 'Puente de La Barra',
       'la-mano': 'La Mano, Playa Brava',
+      'playa-mansa': 'Playa Mansa',
       peninsula: 'Península y puerto',
+      gorriti: 'Isla Gorriti desde la Mansa',
       casapueblo: 'Casapueblo, Punta Ballena',
       'casapueblo-noche': 'Casapueblo, Punta Ballena',
     },
@@ -166,7 +170,9 @@ export const t: Record<Lang, Textos> = {
       manana: 'Meio da manhã',
       mediodia: 'Meio-dia',
       tarde: 'Tarde',
+      playa: 'Tarde de praia',
       dorada: 'Hora dourada',
+      ocaso: 'Sol baixo',
       atardecer: 'Pôr do sol',
       noche: 'Noite',
     },
@@ -175,7 +181,9 @@ export const t: Record<Lang, Textos> = {
       'playas-la-barra': 'Praias de La Barra',
       'la-barra': 'Ponte de La Barra',
       'la-mano': 'La Mano, Playa Brava',
+      'playa-mansa': 'Playa Mansa',
       peninsula: 'Península e porto',
+      gorriti: 'Ilha Gorriti vista da Mansa',
       casapueblo: 'Casapueblo, Punta Ballena',
       'casapueblo-noche': 'Casapueblo, Punta Ballena',
     },
@@ -245,7 +253,9 @@ export const t: Record<Lang, Textos> = {
       manana: 'Mid-morning',
       mediodia: 'Midday',
       tarde: 'Afternoon',
+      playa: 'Beach afternoon',
       dorada: 'Golden hour',
+      ocaso: 'Low sun',
       atardecer: 'Sunset',
       noche: 'Night',
     },
@@ -254,7 +264,9 @@ export const t: Record<Lang, Textos> = {
       'playas-la-barra': 'La Barra beaches',
       'la-barra': 'La Barra bridge',
       'la-mano': 'La Mano, Playa Brava',
+      'playa-mansa': 'Playa Mansa',
       peninsula: 'Peninsula and harbor',
+      gorriti: 'Gorriti Island from Playa Mansa',
       casapueblo: 'Casapueblo, Punta Ballena',
       'casapueblo-noche': 'Casapueblo, Punta Ballena',
     },

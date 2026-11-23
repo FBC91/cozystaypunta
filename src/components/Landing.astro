@@ -3,24 +3,28 @@ import { getImage } from 'astro:assets';
 import CasaCard, { type Casa } from './CasaCard.astro';
 import Icono from './Icono.astro';
 import Recorrido from './Recorrido.astro';
-import recorrido from '../data/recorrido.json';
+import type recorrido from '../data/recorrido.json';
 import { LANGS, rutaDe, t, wa, WHATSAPP_VISIBLE, type Lang } from '../i18n';
 import type { Capa } from '../lib/fondos';
+
+type Parada = (typeof recorrido)[number];
 
 interface Props {
   lang: Lang;
   casas: (Casa & { parada: string })[];
   perfilAirbnb: string;
   capas: Capa[];
+  paradas: Parada[];
 }
 
-const { lang, casas, perfilAirbnb, capas } = Astro.props;
+const { lang, casas, perfilAirbnb, capas, paradas } = Astro.props;
 const tx = t[lang];
 
-const paradasCasas = recorrido.filter((p) => p.casas);
+const paradasCasas = paradas.filter((p) => p.casas);
 const casasDe = (id: string) => casas.filter((c) => c.parada === id);
 const primeraParadaConCasas = paradasCasas.find((p) => casasDe(p.id).length)?.id;
-const n = (p: (typeof recorrido)[number]) => p.n;
+// Número de parada según las que se muestran (las extra solo aparecen si tienen casas).
+const n = (p: Parada) => paradas.indexOf(p) + 1;
 
 // Foto de «Quiénes somos»: una de las casas reales (nunca personas generadas).
 // Se usa una foto que no aparece en los carruseles (estos muestran las 5 primeras).
@@ -37,9 +41,9 @@ const fotoNosotros = urlNosotros
     })
   : null;
 
-const nosotros = recorrido.find((p) => p.seccion === 'nosotros')!;
-const contacto = recorrido.find((p) => p.seccion === 'contacto')!;
-const portada = recorrido.find((p) => p.seccion === 'portada')!;
+const nosotros = paradas.find((p) => p.seccion === 'nosotros')!;
+const contacto = paradas.find((p) => p.seccion === 'contacto')!;
+const portada = paradas.find((p) => p.seccion === 'portada')!;
 const anio = new Date().getFullYear();
 ---
 
@@ -96,7 +100,7 @@ const anio = new Date().getFullYear();
     </a>
   </section>
 
-  <!-- 2 a 5 · Casas, una o dos por parada -->
+  <!-- Casas: una o dos por parada (las paradas extra solo si tienen casas) -->
   {
     paradasCasas.map((p) => {
       const deEsta = casasDe(p.id);
@@ -126,10 +130,10 @@ const anio = new Date().getFullYear();
     })
   }
 
-  <!-- 6 · Quiénes somos -->
-  <section class="parada nosotros" data-parada={nosotros.n - 1} id="nosotros" aria-labelledby="titulo-nosotros">
+  <!-- Quiénes somos -->
+  <section class="parada nosotros" data-parada={n(nosotros) - 1} id="nosotros" aria-labelledby="titulo-nosotros">
     <p class="etiqueta vidrio-oscuro">
-      <span class="etiqueta-n">{String(nosotros.n).padStart(2, '0')}</span>
+      <span class="etiqueta-n">{String(n(nosotros)).padStart(2, '0')}</span>
       <span>{tx.lugares[nosotros.id]} · {tx.luz[nosotros.luz as keyof typeof tx.luz]}</span>
     </p>
     <div class="nosotros-card vidrio revelar">
@@ -171,8 +175,8 @@ const anio = new Date().getFullYear();
     </div>
   </section>
 
-  <!-- 7 · Contacto -->
-  <section class="parada contacto" data-parada={contacto.n - 1} id="contacto" aria-labelledby="titulo-contacto">
+  <!-- Contacto -->
+  <section class="parada contacto" data-parada={n(contacto) - 1} id="contacto" aria-labelledby="titulo-contacto">
     <div class="contacto-centro revelar">
       <h2 id="titulo-contacto">{tx.contacto.titulo}</h2>
       <p class="bajada">{tx.contacto.texto}</p>

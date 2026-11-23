@@ -7,7 +7,7 @@ Landing «Un día en Punta del Este»: un recorrido por la costa (José Ignacio 
 Las casas salen **solas** del perfil de anfitriona en Airbnb. Todos los días a las 9:00 (hora de Uruguay), el workflow `Sincronizar casas de Airbnb`:
 
 1. lee el perfil y cada aviso (nombre, barrio, huéspedes, dormitorios, baños, fotos, calificación);
-2. ubica cada casa en la parada del recorrido más cercana;
+2. ubica cada casa en la parada del recorrido más cercana, sin dejar paradas vacías; si hay más de 4 casas se suman paradas extra (Playa Mansa, Isla Gorriti) con su propio fondo;
 3. si algo cambió, guarda `src/data/propiedades.json` y vuelve a publicar el sitio.
 
 Si Airbnb no responde o devuelve 0 casas, **no se borra nada**: el workflow falla y la web sigue como estaba.
@@ -22,7 +22,7 @@ Por ID de aviso:
 | `nombre`, `nombre_pt`, `nombre_en` | Nombre que se muestra en cada idioma |
 | `barrio` | Corregir la ubicación que se muestra |
 | `oculta: true` | Sacar una casa de la web sin tocar Airbnb |
-| `parada` | Fijar la casa en una parada (`playas-la-barra`, `la-barra`, `la-mano`, `peninsula`) |
+| `parada` | Fijar la casa en una parada (`playas-la-barra`, `la-barra`, `la-mano`, `playa-mansa`, `peninsula`, `gorriti`) |
 | `orden` | Orden dentro de la parada |
 
 ## Desarrollo

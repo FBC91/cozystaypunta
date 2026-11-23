@@ -11,6 +11,10 @@ Todas las fotos del recorrido son reales y vienen de Wikimedia Commons. Para la 
 | 05 | Península y puerto | Jimmy Baikovicius from Montevideo, Uruguay | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) | [Commons](https://commons.wikimedia.org/wiki/File:Punta_del_Este_over_Mavic_Air_2_201229-0026-jikatu_(50774418958).jpg) |
 | 06 | Casapueblo, Punta Ballena | Romerito Pontes from São Carlos | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) | [Commons](https://commons.wikimedia.org/wiki/File:-2017-09-25_a_29-Uruguai_05_Romerito_Pontes_(37206946220).jpg) |
 | 07 | Casapueblo al anochecer | Ezarate | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Commons](https://commons.wikimedia.org/wiki/File:AtardecerCasaPuebloURU1-jul2019.jpg) |
+| 08 | Playa Mansa *(parada extra)* | Rosina Peixoto | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Commons](https://commons.wikimedia.org/wiki/File:Playa_Mansa,_Punta_del_Este.JPG) |
+| 09 | Isla Gorriti desde la Mansa *(parada extra)* | Fadesga | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Commons](https://commons.wikimedia.org/wiki/File:Atardecer_Gorriti.jpg) |
+
+Las paradas extra (08 y 09) solo aparecen en la web cuando hay más casas que paradas fijas.
 
 Las fotos de las casas son de sus avisos en Airbnb, publicados por la anfitriona.
 

@@ -107,3 +107,37 @@ test('asignarParadas: con más casas que paradas van de a dos', () => {
   assert.equal(r.filter((c) => c.parada === 'a').length, 2);
   assert.equal(r.filter((c) => c.parada === 'b').length, 2);
 });
+
+test('asignarParadas: con 5 casas ninguna parada fija queda vacía', () => {
+  const paradas = ['a', 'b', 'c', 'd'].map((id, i) => ({ id, lat: 0, lng: i }));
+  // Todas cerca de «a»: igual cada parada recibe al menos una.
+  const casas = [1, 2, 3, 4, 5].map((i) => ({ id: String(i), lat: 0, lng: 0.01 * i }));
+  const r = asignarParadas(casas, paradas);
+  for (const p of paradas) assert.ok(r.some((c) => c.parada === p.id), `parada ${p.id} vacía`);
+  assert.equal(r.length, 5);
+});
+
+test('asignarParadas: la parada extra solo aparece con más casas que paradas fijas', () => {
+  const paradas = [
+    { id: 'a', lat: 0, lng: 0 },
+    { id: 'x', lat: 0, lng: 0.5, extra: true },
+    { id: 'b', lat: 0, lng: 1 },
+  ];
+  const dos = asignarParadas([{ id: '1', lat: 0, lng: 0.1 }, { id: '2', lat: 0, lng: 0.9 }], paradas);
+  assert.ok(!dos.some((c) => c.parada === 'x'));
+  const tres = asignarParadas(
+    [{ id: '1', lat: 0, lng: 0.1 }, { id: '2', lat: 0, lng: 0.9 }, { id: '3', lat: 0, lng: 0.5 }],
+    paradas,
+  );
+  assert.deepEqual(tres.map((c) => [c.id, c.parada]), [['1', 'a'], ['3', 'x'], ['2', 'b']]);
+});
+
+test('asignarParadas: entre dos extras se activa la más cercana a las casas', () => {
+  const paradas = [
+    { id: 'a', lat: 0, lng: 0 },
+    { id: 'cerca', lat: 0, lng: 2, extra: true },
+    { id: 'lejos', lat: 0, lng: 9, extra: true },
+  ];
+  const r = asignarParadas([{ id: '1', lat: 0, lng: 0 }, { id: '2', lat: 0, lng: 2.1 }], paradas);
+  assert.deepEqual(r.map((c) => c.parada), ['a', 'cerca']);
+});

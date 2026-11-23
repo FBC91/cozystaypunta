@@ -1,14 +1,15 @@
-"""Recorta y etalona las 7 fotos del recorrido.
+"""Recorta y etalona las fotos del recorrido (7 fijas + paradas extra).
 
 Entrada : recursos/fotos-originales/NN-*.jpg (+ creditos.json)
 Salida  : src/assets/recorrido/NN-*.jpg     (16:9, 2560x1440)
           src/assets/recorrido/NN-*-m.jpg   (9:16, 1080x1920, para celular)
           src/data/creditos.json            (autor y licencia de cada foto)
 
-Uso: python scripts/procesar-fotos.py
+Uso: python scripts/procesar-fotos.py [clave ...]
 """
 import json
 import pathlib
+import sys
 
 import numpy as np
 from PIL import Image, ImageOps
@@ -30,6 +31,9 @@ FOTOS = {
     "05-peninsula": {"focal": (0.50, 0.45), "focal_m": (0.50, 0.45), "luz": "dorada"},
     "06-casapueblo": {"focal": (0.55, 0.40), "focal_m": (0.66, 0.40), "luz": "atardecer"},
     "07-casapueblo-noche": {"focal": (0.48, 0.45), "focal_m": (0.44, 0.50), "luz": "noche"},
+    # Paradas extra: solo aparecen en la web si hay más de 4 casas.
+    "08-playa-mansa": {"focal": (0.50, 0.55), "focal_m": (0.45, 0.55), "luz": "playa"},
+    "09-gorriti-ocaso": {"focal": (0.50, 0.45), "focal_m": (0.36, 0.50), "luz": "ocaso"},
 }
 
 # exposición, contraste, saturación, temperatura (+cálido), tinte (+magenta),
@@ -43,6 +47,10 @@ RECETAS = {
                      luz=(1.0, 0.98, 0.94), l_f=0.04, fade=0.01, vin=0.18),
     "tarde": dict(exp=1.0, con=1.06, sat=1.04, temp=0.035, tinte=0.01, sombra=(0.15, 0.20, 0.30), s_f=0.12,
                   luz=(1.0, 0.90, 0.74), l_f=0.12, fade=0.02, vin=0.22),
+    "playa": dict(exp=1.05, con=1.14, sat=1.14, temp=0.05, tinte=0.01, sombra=(0.15, 0.20, 0.30), s_f=0.12,
+                  luz=(1.0, 0.88, 0.70), l_f=0.16, fade=0.015, vin=0.22),
+    "ocaso": dict(exp=0.98, con=1.06, sat=1.0, temp=0.06, tinte=0.03, sombra=(0.18, 0.18, 0.34), s_f=0.20,
+                  luz=(1.0, 0.74, 0.50), l_f=0.20, fade=0.025, vin=0.30),
     "dorada": dict(exp=1.03, con=1.05, sat=1.02, temp=0.14, tinte=0.03, sombra=(0.12, 0.20, 0.30), s_f=0.18,
                    luz=(1.0, 0.76, 0.42), l_f=0.40, fade=0.02, vin=0.28),
     "atardecer": dict(exp=0.92, con=1.08, sat=1.02, temp=0.11, tinte=0.04, sombra=(0.22, 0.18, 0.34), s_f=0.22,
@@ -98,7 +106,10 @@ def etalonar(im: Image.Image, r: dict) -> Image.Image:
 
 def main() -> None:
     SALIDA.mkdir(parents=True, exist_ok=True)
+    solo = set(sys.argv[1:])  # opcional: procesar solo algunas (ej. 08-playa-mansa)
     for clave, cfg in FOTOS.items():
+        if solo and clave not in solo:
+            continue
         im = ImageOps.exif_transpose(Image.open(ORIG / f"{clave}.jpg")).convert("RGB")
         receta = RECETAS[cfg["luz"]]
         ancho = recortar(im, 16 / 9, cfg["focal"]).resize((2560, 1440), Image.LANCZOS)

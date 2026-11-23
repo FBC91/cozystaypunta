@@ -8,6 +8,7 @@ import recorrido from '../data/recorrido.json';
 import { t } from '../i18n';
 
 const lugares = t.es.lugares;
+const lugarDe = (foto: string) => lugares[recorrido.find((p) => p.foto === foto)!.id as keyof typeof lugares];
 ---
 
 <!doctype html>
@@ -31,9 +32,9 @@ const lugares = t.es.lugares;
       </p>
       <ol>
         {
-          creditos.map((c, i) => (
+          creditos.map((c) => (
             <li>
-              <strong>{lugares[recorrido[i].id]}</strong> — {c.autor}.{' '}
+              <strong>{lugarDe(c.foto)}</strong> — {c.autor}.{' '}
               <a href={c.fuente} rel="noopener">Original</a> ·{' '}
               <a href={c.licencia_url} rel="license noopener">{c.licencia}</a>
             </li>
