@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-25T21:23:55.391Z",
+  "actualizado": "2026-11-26T21:10:22.813Z",
   "anfitriona": {
     "nombre": "Sofia",
     "perfil": "https://www.airbnb.com/users/profile/1779800486321737448"
@@ -79,8 +79,6 @@
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/7c9330f4-9cea-4e1a-939f-ee507fb5ecae.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/2369f3e9-5b3f-47ab-8ba5-a0f178bb5fff.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/65d63c49-3d15-43df-8262-e16674dc5f6e.jpeg",
-        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/abdb6c9d-f806-483f-98a0-1281b1047457.jpeg",
-        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/856bc90a-9626-4552-94b1-f42ac1c8bcb4.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/9674d7e3-9a02-41df-a1bc-acbf614ad61b.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/43736d44-8f44-45cd-abe7-0de68751c6cf.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/27108ab7-9114-45cd-8831-2ae794bdc20b.jpeg",
@@ -90,7 +88,12 @@
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/c06b905e-0437-438c-899e-0ac453c6d342.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/007d01aa-cc10-41f0-95d9-1384b571442b.jpeg",
         "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/e8275872-5042-4820-8fee-e5926f56ffbe.jpeg",
-        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/bf5c0c76-4c17-4ae5-a777-b04197ef8eb3.jpeg"
+        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/bf5c0c76-4c17-4ae5-a777-b04197ef8eb3.jpeg",
+        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/2a564af2-5314-42a8-860e-997c6058db7f.jpeg",
+        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/86247f6b-09b2-48c8-84ff-5e3d4105b445.jpeg",
+        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/7bf8e8e5-3556-46db-920e-3851dc0f55e5.jpeg",
+        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/8530edf1-922c-4bf6-9003-0d2ee02a2a9c.jpeg",
+        "https://a0.muscache.com/im/pictures/hosting/Hosting-1823292426877716371/original/d80b444e-249b-4b06-b9b9-66452bc9b69b.jpeg"
       ],
       "nombre_pt": "De frente para o mar na Mansa",
       "nombre_en": "Oceanfront on Playa Mansa",
@@ -236,13 +239,13 @@
     {
       "id": "1044922142207067107",
       "url": "https://www.airbnb.com/rooms/1044922142207067107",
-      "nombre": "Penthouse Playa Brava",
+      "nombre": "Penthouse Playa Brava - Parada 8",
       "tipo": "Vivienda rentada",
       "ciudad": "Punta del Este",
-      "barrio": "Playa Brava",
+      "barrio": "Playa Brava, parada 8",
       "huespedes": 8,
       "habitaciones": 3,
-      "camas": null,
+      "camas": 3,
       "banos": 3,
       "nuevo": false,
       "calificacion": 4.6,
